@@ -1,0 +1,4 @@
+uvicorn==0.15.0
+fastapi==0.68.2
+paramiko==2.7.2
+python-multipart==0.0.5
