@@ -3,24 +3,41 @@
 @File        : view.py
 @Author      : Aug
 @Time        : 2022/2/8
-@Description : api
+@Description : 对服务器操作
 """
-from fastapi import Query, status as status_code
-from fastapi import APIRouter, UploadFile, File, Request
-from apis import req_params
+from fastapi import APIRouter, File, Query, Body, status as status_code
 from utils import sqlite_db, server_link
 from func_timeout import exceptions
 from config import saveRoute
-from typing import List, Dict
+from typing import List, Dict, Optional
 from log_setting import log_error
+from pydantic import BaseModel
 
 app = APIRouter()
 app.prefix = '/api'
 app.tags = ["对服务器操作"]
 
 
+class Params_create_link(BaseModel):
+    """参数校验"""
+    ip: str = Query(..., description='服务器ip')
+    username: str = Query('root', description='账户')
+    password: str = Query(..., description='密码')
+    port: Optional[str] = Query("22", description='端口')
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "ip": "10.1.1.1 | 服务器ip",
+                "username": "root | 账户",
+                "password": "123123 | 密码",
+                "port": "22 | 端口"
+            }
+        }
+
+
 @app.post("/create_link/")
-def create_link(params: req_params.Params_create_link):
+def create_link(params: Params_create_link):
     """创建服务器链接
     -
     :param params:
@@ -158,6 +175,7 @@ def cat_file(
 def download_file(
         file_name: str = Query(..., description='文件名称'),
         remotePath: str = Query(..., description='文件远程路径 结尾带 "\/"or "/" '),
+        fileSavePath: str = Query('', description='文件保存路径(带文件名称) 默认路径为当前项目下 files/文件名'),
         mark: int = Query(..., description='服务器标识')
 ):
     """
@@ -172,12 +190,13 @@ def download_file(
     db.db_close()
     if not query:
         return {'msg': '服务器不存在'}
-    file_path = saveRoute + file_name
+    if not fileSavePath:
+        fileSavePath = saveRoute + file_name
     ls = server_link.LinkServer(query[1], query[3], query[2], query[4])
     ls.transport_link()
-    ls.download_file(file_path, remotePath + file_name)
+    ls.download_file(fileSavePath, remotePath + file_name)
     ls.close()
-    return {'msg': 'ok', 'data': file_path}
+    return {'msg': 'ok', 'data': fileSavePath}
 
 
 @app.post("/upload_file")
