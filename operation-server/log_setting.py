@@ -18,7 +18,7 @@ def log_packaging(log_name, file_path, level, logsavetype="time"):
     logfile = log_path + file_path
     # 校验文件是否存在 不存在则创建
     if not os.path.isfile(logfile):
-        os.mkdir(log_path + file_path.split('/')[0])
+        os.makedirs(log_path + file_path.split('/')[0])
         open(logfile, 'w').close()
     if logsavetype == "time":
         # 根据时间保存日志 一天一个、上限15
