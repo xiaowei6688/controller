@@ -53,13 +53,25 @@ class LinkServer:
         ssh._transport = transport
         self.ssh = ssh
 
+    def invoke_shell_link(self):
+        """invoke_shell 方式连接
+        """
+        # 创建SSHClient 实例对象
+        ssh = paramiko.SSHClient()
+        # 调用方法，表示没有存储远程机器的公钥，允许访问  ；指将目标主机的信息添加至know_hosts文件中
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        # 链接远程机器，地址，端口，用户名密码
+        ssh.connect(self.ip, self.port, self.userName, self.password)
+        chan = ssh.invoke_shell()
+        return chan
+
     def exec_command(self, command):
-        print(f'执行命令：{command}')
+        print(f'command：{command}')
         # 执行命令
         stdin, stdout, stderr = self.ssh.exec_command(command)
         # print(f"stdin:{stdin}")
         res = stdout.read() if stdout else stderr.read()
-        # print(f"return:{res.decode()}")
+        print(f"result:{res.decode()}")
         return res.decode()
 
     def upload_files(self, localPath="C:/Users/14418/Desktop/serverLink.py", remotePath="/root/aug-1-11-01/serverLink"
