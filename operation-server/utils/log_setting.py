@@ -59,7 +59,7 @@ log_error = log_packaging("log_error", "error/logging_error.log", logging.ERROR,
 # log_debug = log_packaging("log_debug","error/logging_debug.log",logging.DEBUG).info
 
 # [log record info]
-log_record = log_packaging("log_record", "record/logging_record_record`.log", logging.INFO).info
+log_record = log_packaging("log_record", "record/logging_record.log", logging.INFO).info
 
 
 if __name__ == "__main__":
