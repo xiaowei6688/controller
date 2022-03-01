@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 """
-@File        : view.py
+@File        : server_operation.py
 @Author      : Aug
 @Time        : 2022/2/8
 @Description : 对服务器操作
 """
-from fastapi import APIRouter, File, Query, Body, status as status_code
+from fastapi import Query
 from utils import sqlite_db, server_link
 from func_timeout import exceptions
 from config import saveRoute
-from typing import List, Dict, Optional
-from log_setting import log_error
+from typing import List, Optional
+from utils.log_setting import log_error
 from pydantic import BaseModel
+from routers import router as app
 
-app = APIRouter()
 app.prefix = '/api'
 app.tags = ["对服务器操作"]
 
@@ -232,7 +232,8 @@ def upload_file(
             continue
         ls = server_link.LinkServer(query[1], query[3], query[2], query[4])
         ls.transport_link()
-        ls.upload_files(saveRoute + file_path, remote_path + file_path)
+        # ls.upload_files(saveRoute + file_path, remote_path + file_path)
+        ls.upload_files(file_path, "/home/project/dockerfile")
         ls.close()
         success_list.append({"data": i})
     return {'msg': 'ok', 'data': {
