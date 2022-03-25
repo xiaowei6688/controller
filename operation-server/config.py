@@ -1,4 +1,10 @@
-
+# -*- coding: utf-8 -*-
+"""
+@File        : config.py
+@Author      : Aug
+@Time        : 2022/2/17
+@Description : config
+"""
 import os
 
 currentProjectPath = os.getcwd()

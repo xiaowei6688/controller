@@ -16,6 +16,10 @@ def log_packaging(log_name, file_path, level, logsavetype="time"):
     log_path = r"{}/logs/".format(os.getcwd())
     # log_name = log_path + 'error/logging_error.log'
     logfile = log_path + file_path
+    # 校验文件是否存在 不存在则创建
+    if not os.path.isfile(logfile):
+        os.makedirs(log_path + file_path.split('/')[0])
+        open(logfile, 'w').close()
     if logsavetype == "time":
         # 根据时间保存日志 一天一个、上限15
         fh = TimedRotatingFileHandler(
@@ -55,7 +59,7 @@ log_error = log_packaging("log_error", "error/logging_error.log", logging.ERROR,
 # log_debug = log_packaging("log_debug","error/logging_debug.log",logging.DEBUG).info
 
 # [log record info]
-log_record = log_packaging("log_record", "record/logging_record_record.log", logging.INFO).info
+log_record = log_packaging("log_record", "record/logging_record.log", logging.INFO).info
 
 
 if __name__ == "__main__":
